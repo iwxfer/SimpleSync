@@ -26,6 +26,8 @@ cd "/Users/tnhu/Library/Application Support/Sublime Text 3/Packages"
 git clone https://github.com/tnhu/SimpleSync.git
 ```
 
+> You can get your Sublime Text packages folder in Preferences > Browse packages...
+
 ### Using ST2/3 Package Control
 
 Search for SimpleSync in ST2/3 Package Control and install it.
