@@ -15,12 +15,21 @@ import sublime_plugin
 import subprocess
 import threading
 import platform
+import os
+import string
+import shutil
 #
 # Run a process
 # @param cmd process command
 #
 def runProcess(cmd):
-  p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+  if os.name == 'nt':
+    print ("Starting Windows process in bg")
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    p = subprocess.Popen(cmd ,startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=False)
+  else:
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
   while (True):
     retcode = p.poll()             #returns None while subprocess is running
@@ -81,8 +90,11 @@ class LocalCopier(threading.Thread):
   def run(self):
     print("SimpleSync: ", self.local_file, " -> ", self.remote_file)
 
-    for line in runProcess(['cp', self.local_file, self.remote_file]):
-      print(line, end='')
+    if os.name == 'nt':
+      shutil.copyfile(self.local_file, self.remote_file)
+    else:
+      for line in runProcess(['cp', self.local_file, self.remote_file]):
+        print(line, end='')
 
 #
 # Subclass sublime_plugin.EventListener
