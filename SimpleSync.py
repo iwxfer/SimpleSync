@@ -14,7 +14,7 @@ import sublime
 import sublime_plugin
 import subprocess
 import threading
-
+import platform
 #
 # Run a process
 # @param cmd process command
@@ -90,6 +90,9 @@ class LocalCopier(threading.Thread):
 class SimpleSync(sublime_plugin.EventListener):
   def on_post_save(self, view):
     local_file = view.file_name()
+    if platform.uname()[0] == 'Windows':
+      local_file = '/cygdrive/'+local_file[0].lower()+local_file[2:].replace('\\','/')
+
     syncItems  = getSyncItem(local_file)
 
     if (len(syncItems) > 0):
